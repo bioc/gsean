@@ -1,7 +1,7 @@
 ---
 title: "Gene Set Enrichment Analysis with Networks"
 author: "Dongmin Jung"
-date: April 27, 2018
+date: April 29, 2019
 output:
   rmarkdown::html_document:
     highlight: pygments
@@ -39,14 +39,13 @@ Recently, network module-based methods have been proposed as a powerful tool to 
 
 ## GSEA with the list of genes, based on the label propagation
 
-Label propagation is a semi-supervised learning that assigns labels for unlabelled nodes in a network. Each node will be labeled, based on the corresponding score. These score can be used as a statistic for GSEA. Thus ORA can be performed by GSEA. For the example of GSEA for the label propagation, consider Lung Adenocarcinoma data from TCGA. We have set our threshold to 0.8, so only those nodes with similarities higher than 0.8 will be considered neighbors. Consider recurrently mutated genes from MutSig and KEGG pathways. In the result, we can see that these mutated genes are enriched at cancer relevant signaling pathways such as ERBB and MAPK pathways.
+Label propagation is a semi-supervised learning that assigns labels for unlabelled nodes in a network. Each node will be labeled, based on the corresponding score. These score can be used as a statistic for GSEA. Thus ORA can be performed by GSEA. For the example of GSEA for the label propagation, consider Lung Adenocarcinoma data from TCGA. We have set our threshold to 0.7, so only those nodes with similarities higher than 0.7 will be considered neighbors. Consider recurrently mutated genes from MutSig and KEGG pathways. In the result, we can see that these mutated genes are enriched at cancer relevant signaling pathways such as ERBB and MAPK pathways. The warning message indicates that there are many genes that have the same score and so are ranked equally, which means that they are not affected by recurrently mutated genes.
 
 
 ```{r, fig.align='center', message=FALSE, warning=FALSE, eval=FALSE}
 library(gsean)
 library(TCGAbiolinks)
-library(DESeq2)
-library(PPInfer)
+library(SummarizedExperiment)
 # TCGA LUAD
 query <- GDCquery(project = "TCGA-LUAD",
                   data.category = "Gene expression",
@@ -70,13 +69,13 @@ load(system.file("data", "KEGG_hsa.rda", package = "gsean"))
 
 # GSEA
 set.seed(1)
-result.GSEA <- gsean(KEGG_hsa, recur.mut.gene, exprs.LUAD, threshold = 0.8)
+result.GSEA <- gsean(KEGG_hsa, recur.mut.gene, exprs.LUAD, threshold = 0.7)
 invisible(capture.output(p <- GSEA.barplot(result.GSEA, category = 'pathway',
                                            score = 'NES', pvalue = 'padj',
                                            sort = 'padj', top = 20)))
-p <- p + scale_fill_gradient(low = "red", high = "blue") +
-  theme(plot.margin = margin(10, 10, 10, 75))
-plotly::ggplotly(p + guides(fill = FALSE))
+p <- GSEA.barplot(result.GSEA, category = 'pathway', score = 'NES',
+                  pvalue = 'padj', sort = 'padj', top = 20)
+p + theme(plot.margin = margin(10, 10, 10, 75))
 ```
 
 
@@ -93,7 +92,6 @@ Gene expression data are analyzed to identify differentially expressed genes. Co
 library(gsean)
 library(pasilla)
 library(DESeq2)
-library(PPInfer)
 # pasilla count data
 pasCts <- system.file("extdata", "pasilla_gene_counts.tsv",
                       package = "pasilla", mustWork = TRUE)
@@ -128,10 +126,8 @@ set.seed(1)
 result.GSEA <- gsean(GO_dme, statistic, exprs.pasilla)
 invisible(capture.output(p <- GSEA.barplot(result.GSEA, category = 'pathway',
                                            score = 'NES', top = 50, pvalue = 'padj',
-                                           sort = 'padj', decreasing = FALSE,
-                                           numChar = 110)))
-p <- p + scale_fill_continuous(low = 'red', high = 'green') +
-  theme(plot.margin = margin(10, 10, 10, 50))
+                                           sort = 'padj', numChar = 110) + 
+  theme(plot.margin = margin(10, 10, 10, 50))))
 plotly::ggplotly(p)
 ```
 
