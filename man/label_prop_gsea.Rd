@@ -62,7 +62,7 @@ Dongmin Jung
 
 
 \seealso{
-fgsea::fgsea, RANKS::label.prop
+fgsea::fgsea
 }
 
 \examples{
