@@ -1,5 +1,6 @@
 export("centrality_gsea")
 export("exprs2adj")
 export("label_prop_gsea")
+export("gsean")
 import(fgsea)
 import(PPInfer)
