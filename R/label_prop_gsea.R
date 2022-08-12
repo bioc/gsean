@@ -94,7 +94,7 @@ setMethod("Prob.norm", signature(W="matrix"),
             diag.D <- apply(W,1,sum);
             diag.D[diag.D==0] <- Inf;
             inv.diag.D <- 1/diag.D;
-            W <- .C("norm_2", as.double(W), as.double(inv.diag.D), as.integer(n), PACKAGE="NetPreProc")[[1]];
+            W <- .C("norm_2", as.double(W), as.double(inv.diag.D), as.integer(n), PACKAGE="gsean")[[1]];
             W <- matrix(W, nrow=n);
             rownames(W) <- colnames(W) <- names.var;
             return(W);
