@@ -69,6 +69,13 @@ label.prop <- function(W, ind.positives, tmax=1000, eps=1e-5, norm=TRUE) {
   return(list(p=p, ind.positives=ind.positives, n.iter=t));  
 }
 
+#' Function that computes the norm 1 of a numeric vector
+#' @param x : numeric vector
+#' @return a single real value (the norm1 of the input vector)
+norm1 <- function(x) {
+  return(sum(abs(x)));
+}
+
 
 # from the package NetPreProc
 
