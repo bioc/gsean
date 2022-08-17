@@ -1,5 +1,7 @@
-
-exportPattern("^[^\\.]")
-
+export("centrality_gsea")
+export("exprs2adj")
+export("label_prop_gsea")
+export("gsean")
+useDynLib("gsean")
 import(fgsea)
 import(PPInfer)
